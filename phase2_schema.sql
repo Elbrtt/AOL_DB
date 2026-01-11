@@ -21,7 +21,7 @@ CREATE TABLE MsCustomer (
 
 INSERT INTO MsCustomer (CustomerId, CustomerName, CustomerPhone, Country)
 SELECT DISTINCT 
-    CAST(t.Customer_ID AS CHAR(10)) AS CustomerId, -- Convert float/int to string
+    CAST(t.Customer_ID AS CHAR(10)) AS CustomerId, 
     "John" AS CustomerName,
     "0123456789" AS CustomerPhone,
     c.CountryId
@@ -39,9 +39,9 @@ CREATE TABLE MsProduct (
 INSERT INTO MsProduct (StockCode, Description, BasePrice, StockQuantity)
 SELECT 
     StockCode, 
-    MAX(Description) as Description, -- Pick one description if duplicates exist
-    MAX(Price) as BasePrice,         -- Pick the highest recorded price
-    1001 as StockQuantity            -- Default
+    MAX(Description) as Description,
+    MAX(Price) as BasePrice,         
+    1001 as StockQuantity            
 FROM online_retail
 GROUP BY StockCode;
 
@@ -58,7 +58,7 @@ CREATE TABLE MsInvoice (
 INSERT INTO MsInvoice (InvoiceId, InvoiceDate, CustomerId)
 SELECT 
     Invoice AS InvoiceId,
-    MIN(InvoiceDate) AS InvoiceDate, -- Takes the first timestamp if duplicates exist
+    MIN(InvoiceDate) AS InvoiceDate, 
     MAX(CASE 
         WHEN Customer_ID IS NULL THEN NULL
         ELSE CAST(Customer_ID AS CHAR(10)) 
@@ -86,6 +86,6 @@ INSERT INTO MsOrder (InvoiceId, StockCode, OrderQuantity)
 SELECT 
     Invoice,
     StockCode,
-    SUM(Quantity) -- Sum duplicates to merge into one line item per product
+    SUM(Quantity) 
 FROM online_retail
 GROUP BY Invoice, StockCode;
