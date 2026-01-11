@@ -20,7 +20,6 @@ BEGIN
     SELECT 
         i.InvoiceId,
         i.InvoiceDate,
-        -- Calculate Total Value (Sum of Qty * Price for all items in that invoice)
         CAST(SUM(o.OrderQuantity * p.BasePrice) AS DECIMAL(10,2)) AS TotalValue
     FROM MsInvoice i
     JOIN MsOrder o ON i.InvoiceId = o.InvoiceId
@@ -31,14 +30,11 @@ BEGIN
 END $$
 
 -- Test the Trigger
--- 1. Check current stock for product '21724'
 SELECT StockQuantity FROM MsProduct WHERE StockCode = '21724';
 
--- 2. "Buy" 10 items (Insert a new order)
 INSERT INTO msinvoice VALUES ('TEST123', now(), 12362);
 INSERT INTO MsOrder VALUES ('TEST123', '21724', 10);
 
--- 3. Check stock again (It should be 10 lower)
 SELECT StockQuantity FROM MsProduct WHERE StockCode = '21724';
 
 -- Test the Procedure
